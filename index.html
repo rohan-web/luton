@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>London Luton Airport Taxis | Fixed price transfers, 24/7</title>
+<meta name="description" content="Fixed-price Luton Airport taxi and minibus transfers. Barrier fee included, flights monitored, 24 hours a day.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@600;800;900&family=Overpass+Mono:wght@500;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--night:#071a3a;--blue:#0b4ea2;--blue-d:#083a7a;--yellow:#ffd21f;--paper:#f2f5f9;--tarmac:#1b1f26;--line:#d5dce6;--muted:#566070;--green:#19a15f}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Public Sans",system-ui,sans-serif;color:var(--tarmac);background:#fff;line-height:1.55;font-size:17px;overflow-x:hidden}
+h1,h2,h3,.ov{font-family:Overpass,"Arial Narrow",system-ui,sans-serif;letter-spacing:-.01em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.demo{background:var(--tarmac);color:#e8ecf2;font-size:13px;text-align:center;padding:8px 14px}
+.demo b{color:var(--yellow)}
+/* sticky bar after hero */
+.sticky{position:fixed;top:0;left:0;right:0;z-index:40;background:rgba(7,26,58,.96);backdrop-filter:blur(6px);color:#fff;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 5vw;transform:translateY(-110%);transition:transform .3s}
+.sticky.show{transform:none}
+.sticky b{font:900 17px Overpass,sans-serif}
+.sticky a.b{background:var(--yellow);color:var(--tarmac);font:800 15px Overpass,sans-serif;padding:9px 16px;border-radius:8px;text-decoration:none;white-space:nowrap}
+/* hero */
+.hero{position:relative;min-height:clamp(620px,93vh,810px);background:linear-gradient(180deg,#040c20 0%,#093875 44%,#e5844c 85%,#ffd7a0 100%);overflow:hidden;color:#fff}
+.hero svg.scene{position:absolute;inset:0;width:100%;height:100%}
+.topbar{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:20px 5vw}
+.brand{font-family:Overpass,sans-serif;font-weight:900;font-size:20px;line-height:1.05;text-decoration:none}
+.brand span{display:block;font-weight:600;font-size:12px;color:#c9d9f2}
+.topbar nav{display:flex;gap:22px;align-items:center;font-weight:500;font-size:15px}
+.topbar nav a{text-decoration:none}
+.tel{background:var(--yellow);color:var(--tarmac);padding:10px 16px;border-radius:8px;font-weight:700;text-decoration:none}
+.copy{position:relative;z-index:2;padding:5vh 5vw 0;max-width:820px}
+.copy h1{font-size:clamp(46px,7.4vw,102px);line-height:.94;font-weight:900;letter-spacing:-.03em;text-shadow:0 4px 30px rgba(5,15,38,.5)}
+.copy p{margin:22px 0 28px;font-size:clamp(17px,1.6vw,21px);max-width:40ch;color:#e3ecfb;text-shadow:0 2px 16px rgba(5,15,38,.5)}
+.cta{display:inline-block;background:var(--yellow);color:var(--tarmac);font:800 18px Overpass,sans-serif;padding:15px 26px;border-radius:10px;text-decoration:none;border:0;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.cta:hover{filter:brightness(.96)}
+/* boarding pass */
+.pass-wrap{position:relative;z-index:5;margin:-46px auto 0;max-width:1120px;padding:0 4vw}
+.pass{display:grid;grid-template-columns:1fr 210px;background:#fff;border-radius:20px;box-shadow:0 26px 60px rgba(7,26,58,.3);overflow:hidden;position:relative}
+.pass::before,.pass::after{content:"";position:absolute;right:199px;width:22px;height:22px;background:#fff;border-radius:50%;z-index:2;box-shadow:inset 0 0 0 1px var(--line)}
+.pass::before{top:-11px}.pass::after{bottom:-11px}
+.pass .main{padding:22px 26px 20px}
+.pass .tag{display:flex;justify-content:space-between;align-items:center;font:700 13px "Overpass Mono",monospace;color:var(--blue);margin-bottom:12px}
+.pass .tag b{background:var(--blue);color:#fff;padding:3px 10px;border-radius:5px}
+.fields{display:grid;grid-template-columns:1.1fr 1.3fr .9fr .8fr 1fr;gap:12px}
+.pass label{font:700 12px "Overpass Mono",monospace;color:var(--muted)}
+.pass input,.pass select{display:block;width:100%;margin-top:5px;padding:11px 10px;border:2px solid var(--line);border-radius:10px;font:500 16px "Public Sans",sans-serif;color:var(--tarmac);background:#fff}
+.pass input:focus,.pass select:focus{border-color:var(--blue);outline:none}
+.dests{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center;font-size:14px;color:var(--muted)}
+.dests button{all:unset;cursor:pointer;border:2px solid var(--line);border-radius:999px;padding:5px 14px;font:700 14px Overpass,sans-serif;color:var(--blue)}
+.dests button[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
+.dests button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.stub{background:var(--yellow);border-left:3px dashed #1b1f2655;padding:22px 20px;display:flex;flex-direction:column;justify-content:space-between;gap:14px}
+.stub .code{font:900 54px/0.9 Overpass,sans-serif}
+.stub .code small{display:block;font:700 12px "Overpass Mono",monospace;margin-top:6px}
+.stub button{border:0;background:var(--tarmac);color:#fff;font:800 16px Overpass,sans-serif;padding:13px 10px;border-radius:10px;cursor:pointer;width:100%}
+.stub p{font-size:12px;line-height:1.35}
+/* stats band */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);max-width:1120px;margin:56px auto 0;padding:0 4vw}
+.stats div{padding:6px 22px;border-left:3px solid var(--blue)}
+.stats b{display:block;font:900 clamp(34px,4.4vw,56px)/1 Overpass,sans-serif;color:var(--blue);letter-spacing:-.03em}
+.stats span{font-size:15px;color:var(--muted)}
+/* sections */
+section{padding:84px 5vw}
+.h2{font:900 clamp(30px,4.2vw,52px)/1.03 Overpass,sans-serif;letter-spacing:-.02em;max-width:18ch;margin-bottom:12px}
+.intro{color:var(--muted);max-width:56ch;margin-bottom:34px}
+.story{background:var(--paper);margin-top:70px}
+.chap{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center;max-width:1100px;margin:0 auto 70px}
+.chap:last-child{margin-bottom:0}
+.chap:nth-child(even) .vis{order:-1}
+.chap .n{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;font:900 20px Overpass,sans-serif;margin-bottom:14px}
+.chap h3{font:900 clamp(26px,3vw,38px)/1.05 Overpass,sans-serif;margin-bottom:10px}
+.chap p{color:var(--muted);max-width:42ch}
+.vis{background:#fff;border-radius:22px;padding:26px;box-shadow:0 14px 40px rgba(7,26,58,.1);border:1px solid var(--line)}
+.phone{max-width:300px;margin:0 auto;background:#0b141f;border-radius:30px;padding:12px}
+.phone .scr{background:#e9efe7;border-radius:20px;padding:16px 12px;min-height:290px;display:flex;flex-direction:column;gap:10px;font-size:14.5px}
+.phone .hd{font:700 13px "Public Sans",sans-serif;color:#25422f;display:flex;gap:8px;align-items:center}
+.phone .hd i{width:26px;height:26px;border-radius:50%;background:var(--blue);display:inline-block}
+.bub{max-width:82%;padding:9px 12px;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.bub.me{align-self:flex-end;background:#d8f5c9}
+.bub.co{align-self:flex-start;background:#fff}
+.board{background:#0b1220;border-radius:14px;padding:18px;font-family:"Overpass Mono",monospace;color:#ffc94d}
+.board .bh{display:flex;justify-content:space-between;color:#8aa0c4;font-size:12px;border-bottom:1px solid #22304a;padding-bottom:8px;margin-bottom:6px}
+.board .br{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;padding:11px 0;border-bottom:1px solid #1a2740;font-size:15px;font-weight:700}
+.board .br span:last-child{color:#7dffa0;text-align:right}
+.board .br.wait span:last-child{color:#ffc94d}
+.board .note{font-size:11.5px;color:#8aa0c4;margin-top:12px}
+/* waiting calculator */
+.calc{background:var(--night);color:#fff}
+.calc .wrap{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center;max-width:1100px;margin:0 auto}
+.calc .intro{color:#b9c9e6}
+.cbox{background:#0d2250;border:1px solid #2a4688;border-radius:22px;padding:28px}
+.cbox label{font:700 13px "Overpass Mono",monospace;color:#9db4de;display:block;margin-bottom:10px}
+.cbox input[type=range]{width:100%;accent-color:var(--yellow);height:34px}
+.cbox .out{display:flex;justify-content:space-between;align-items:baseline;margin:6px 0 16px}
+.cbox .out b{font:900 56px/1 Overpass,sans-serif;color:var(--yellow)}
+.cbox .out span{font:700 15px "Overpass Mono",monospace;color:#9db4de}
+.track{position:relative;height:18px;border-radius:9px;overflow:hidden;display:flex;background:#1a3470}
+.track i{display:block;height:100%}
+.track .f{background:var(--green);width:37.5%}
+.track .p{background:var(--yellow);width:62.5%}
+.mark{position:relative;height:0}
+.mark em{position:absolute;top:-30px;width:4px;height:42px;background:#fff;border-radius:2px;transform:translateX(-2px)}
+.legend{display:flex;justify-content:space-between;font-size:13px;color:#9db4de;margin-top:12px}
+.msg{margin-top:16px;font-size:15.5px;color:#e3ecfb;min-height:48px}
+.msg b{color:#fff}
+/* fleet */
+.fleet{background:#fff}
+.road{background:linear-gradient(180deg,#1a2230,#10151d);border-radius:20px;padding:30px 20px 18px;display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:14px;align-items:end;position:relative;overflow:hidden;color:#fff}
+.road::after{content:"";position:absolute;left:0;right:0;bottom:62px;height:3px;background:repeating-linear-gradient(90deg,#ffd21f 0 38px,transparent 38px 76px);opacity:.5}
+.veh{text-align:center;position:relative;z-index:1;transition:transform .25s}
+.veh:hover{transform:translateY(-6px)}
+.veh svg{width:100%;height:auto;max-height:130px;filter:drop-shadow(0 10px 8px rgba(0,0,0,.4))}
+.veh h3{font:900 22px Overpass,sans-serif;margin-top:16px}
+.veh p{font-size:14px;color:#b9c9e6}
+.fnote{margin-top:22px;color:var(--muted)}
+/* routes */
+.routes{background:var(--blue);color:#fff}
+.routes .intro{color:#cfe0f7}
+.rmap{max-width:880px;background:#0a3f86;border-radius:20px;padding:10px}
+.rmap svg{width:100%;height:auto;display:block}
+.rmap figcaption{font-size:12.5px;color:#cfe0f7;padding:2px 12px 10px}
+.flow{animation:dash 2.4s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-20}}
+/* faq */
+.faq{background:var(--paper)}
+.faq .list{max-width:820px}
+details{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;padding:2px 20px}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:14px;align-items:center;font:800 19px Overpass,sans-serif;padding:16px 0}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:26px;color:var(--blue);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding:0 0 18px;color:var(--muted);max-width:60ch}
+/* proof + contact */
+.proof{display:flex;gap:44px;flex-wrap:wrap;align-items:center;max-width:1000px;margin:0 auto}
+.proof .big{font:900 clamp(90px,16vw,200px)/0.8 Overpass,sans-serif;color:var(--blue);letter-spacing:-.05em}
+.proof p{max-width:38ch;color:var(--muted);font-size:19px}
+.proof .pay{margin-top:14px;font-size:14.5px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.tags span{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:600;font-size:14px}
+.call{background:var(--yellow);text-align:center}
+.call .h2{margin:0 auto 10px;max-width:22ch}
+.call .num{display:block;font:900 clamp(36px,7vw,84px)/1 Overpass,sans-serif;text-decoration:none;margin:12px 0 22px}
+.call .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.call .btns a{background:var(--tarmac);color:#fff;font:800 17px Overpass,sans-serif;padding:14px 24px;border-radius:10px;text-decoration:none}
+.call address{font-style:normal;margin-top:22px;font-size:15px}
+footer{background:var(--tarmac);color:#b9c1cc;padding:26px 5vw;font-size:14px}
+/* chat */
+#cb{position:fixed;right:18px;bottom:18px;z-index:30;background:var(--blue);color:#fff;border:3px solid #fff;border-radius:999px;padding:12px 20px;font:800 16px Overpass,sans-serif;cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,.28)}
+#cw{position:fixed;right:18px;bottom:76px;z-index:30;width:340px;max-width:calc(100vw - 36px);background:#fff;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.3);display:none;flex-direction:column;overflow:hidden;border:3px solid var(--blue)}
+#cw.open{display:flex}
+.ch{background:var(--blue);color:#fff;padding:12px 14px;font:800 16px Overpass,sans-serif}
+.ch small{display:block;font:400 12px "Public Sans",sans-serif;color:#cfe0f7}
+#cm{height:260px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--paper)}
+.m{max-width:84%;padding:9px 12px;border-radius:10px;font-size:14.5px}
+.b{background:#fff;border:1px solid var(--line);align-self:flex-start}
+.u{background:var(--blue);color:#fff;align-self:flex-end}
+#cf{display:flex;border-top:1px solid var(--line)}
+#cf input{flex:1;border:0;padding:13px;font:16px "Public Sans",sans-serif;outline:none}
+#cf button{border:0;background:#fff;color:var(--blue);font:800 15px Overpass,sans-serif;padding:0 16px;cursor:pointer}
+/* motion: the plane lands in view, lights blink */
+.plane{transform:translate(-520px,-30px);animation:glide 5.2s cubic-bezier(.22,.7,.25,1) .3s forwards}
+@keyframes glide{to{transform:translate(0,0)}}
+.beacon{animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.15}}
+.pulse{animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.55}}
+@media(max-width:900px){
+  .topbar nav a:not(.tel){display:none}
+  .fields{grid-template-columns:1fr 1fr}
+  .pass{grid-template-columns:1fr}
+  .pass::before,.pass::after{display:none}
+  .stub{border-left:0;border-top:3px dashed #1b1f2655;flex-direction:row;align-items:center}
+  .stub .code{font-size:40px}
+  .stats{grid-template-columns:1fr 1fr;gap:22px 0}
+  .chap,.calc .wrap{grid-template-columns:1fr;gap:26px}
+  .chap:nth-child(even) .vis{order:0}
+  .road{grid-template-columns:1fr}
+  .copy{padding-top:3vh}
+}
+@media(prefers-reduced-motion:reduce){.plane{animation:none;transform:none}.beacon,.pulse,.flow{animation:none}}
+</style>
+</head>
+<body>
+<!-- shared gradients for vehicles -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="bodyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cdd8e8"/></linearGradient>
+  <linearGradient id="glassg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a9cdff"/><stop offset="1" stop-color="#4a82d4"/></linearGradient>
+</defs></svg>
+
+<div class="demo">Concept preview designed by <b>Codence</b> for London Luton Airport Taxis. Not a live site.</div>
+<div class="sticky" id="sticky"><b>London Luton Airport Taxis</b><a class="b" href="#quote">Get your fixed fare</a></div>
+
+<div class="hero" id="heroEl">
+  <svg class="scene" viewBox="0 0 1440 760" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <radialGradient id="sun" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffe2b0" stop-opacity=".95"/><stop offset="1" stop-color="#ffe2b0" stop-opacity="0"/></radialGradient>
+      <radialGradient id="moonglow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#dfe9ff" stop-opacity=".5"/><stop offset="1" stop-color="#dfe9ff" stop-opacity="0"/></radialGradient>
+      <radialGradient id="lamp" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffd978" stop-opacity=".6"/><stop offset="1" stop-color="#ffd978" stop-opacity="0"/></radialGradient>
+      <linearGradient id="trail" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".55"/></linearGradient>
+      <linearGradient id="beam" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <linearGradient id="facade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b3d70"/><stop offset="1" stop-color="#0e2347"/></linearGradient>
+      <linearGradient id="tarmac" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a212c"/><stop offset="1" stop-color="#0b0f15"/></linearGradient>
+      <linearGradient id="fadeR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <mask id="mr"><rect x="110" y="612" width="1030" height="40" fill="url(#fadeR)"/></mask>
+      <filter id="soft"><feGaussianBlur stdDeviation="9"/></filter>
+      <pattern id="win" width="22" height="16" patternUnits="userSpaceOnUse"><rect x="3" y="3" width="13" height="8" rx="1.5" fill="#ffd978" opacity=".85"/></pattern>
+      <pattern id="mull" width="66" height="66" patternUnits="userSpaceOnUse"><path d="M0 0V66" stroke="#0a1730" stroke-width="3"/></pattern>
+      <g id="planeBody">
+        <path d="M-60 6 L-118 62 L-86 62 L40 8Z" fill="#c6d2e3"/>
+        <path d="M-140 0 Q-152 -14 -120 -17 L88 -17 Q152 -14 164 0 Q152 15 88 17 L-120 17 Q-152 14 -140 0Z" fill="#f5f8fc"/>
+        <path d="M-128 -15 L-152 -64 L-110 -64 L-76 -15Z" fill="#ffd21f"/>
+        <ellipse cx="-22" cy="34" rx="22" ry="9" fill="#9fb0c8"/>
+        <path d="M118 -16 Q150 -14 160 -2 L130 -2Z" fill="#9fc2ff"/>
+        <g fill="#0b4ea2"><circle cx="-98" cy="-3" r="3"/><circle cx="-76" cy="-3" r="3"/><circle cx="-54" cy="-3" r="3"/><circle cx="-32" cy="-3" r="3"/><circle cx="-10" cy="-3" r="3"/><circle cx="12" cy="-3" r="3"/><circle cx="34" cy="-3" r="3"/><circle cx="56" cy="-3" r="3"/><circle cx="78" cy="-3" r="3"/></g>
+        <circle cx="-118" cy="62" r="4" fill="#ff4d4d" class="beacon"/>
+        <circle cx="160" cy="4" r="3" fill="#fff"/>
+      </g>
+    </defs>
+    <!-- sky -->
+    <g fill="#fff" opacity=".8">
+      <circle cx="120" cy="60" r="1.6"/><circle cx="340" cy="120" r="1.2"/><circle cx="520" cy="40" r="1.8"/><circle cx="700" cy="90" r="1.2"/><circle cx="880" cy="50" r="1.6"/><circle cx="1040" cy="130" r="1.2"/><circle cx="1200" cy="70" r="1.8"/><circle cx="1330" cy="140" r="1.2"/><circle cx="60" cy="190" r="1.2"/><circle cx="260" cy="230" r="1.4"/><circle cx="1380" cy="40" r="1.4"/><circle cx="610" cy="170" r="1.1"/><circle cx="960" cy="210" r="1.1"/>
+    </g>
+    <circle cx="1310" cy="230" r="90" fill="url(#moonglow)"/>
+    <circle cx="1310" cy="230" r="26" fill="#f6f2e4"/><circle cx="1302" cy="224" r="5" fill="#e6dfca"/><circle cx="1318" cy="238" r="7" fill="#e9e3ce"/>
+    <circle cx="760" cy="640" r="560" fill="url(#sun)"/>
+    <g filter="url(#soft)"><g fill="#fff" opacity=".1"><ellipse cx="300" cy="300" rx="230" ry="24"/><ellipse cx="540" cy="338" rx="190" ry="18"/><ellipse cx="1120" cy="372" rx="270" ry="22"/></g><g fill="#ffd7a0" opacity=".26"><ellipse cx="420" cy="486" rx="320" ry="16"/><ellipse cx="1050" cy="470" rx="360" ry="18"/></g></g>
+    <path d="M0 566 Q180 524 360 552 T720 544 T1080 556 T1440 532 V630 H0Z" fill="#0b1a38" opacity=".92"/>
+    <!-- distant plane taking off -->
+    <g transform="translate(1010 430) rotate(-14) scale(.26)"><use href="#planeBody"/></g>
+    <!-- main plane -->
+    <g class="plane"><g id="pl" transform="translate(980 190) rotate(7)">
+      <rect x="-470" y="-2" width="320" height="4" fill="url(#trail)"/>
+      <polygon points="156,4 470,86 470,22" fill="url(#beam)"/>
+      <use href="#planeBody"/>
+    </g></g>
+    <!-- terminal -->
+    <rect x="90" y="530" width="1070" height="12" fill="#0a1730"/>
+    <rect x="90" y="542" width="1070" height="3" fill="#ffd978" opacity=".75"/>
+    <rect x="110" y="545" width="1030" height="66" fill="url(#facade)"/>
+    <rect x="110" y="545" width="1030" height="66" fill="url(#win)"/>
+    <rect x="110" y="545" width="1030" height="66" fill="url(#mull)"/>
+    <rect x="560" y="563" width="124" height="48" fill="#ffe8a3" opacity=".92"/><rect x="620" y="563" width="3" height="48" fill="#b98a2a"/>
+    <rect x="760" y="494" width="196" height="34" rx="4" fill="#0a1730" stroke="#ffd21f" stroke-width="2"/>
+    <text x="858" y="519" text-anchor="middle" font-family="Overpass,sans-serif" font-weight="900" font-size="20" fill="#ffd21f" letter-spacing="2">ARRIVALS</text>
+    <rect x="1186" y="372" width="22" height="240" fill="#0e1c36"/>
+    <path d="M1166 340 L1228 340 L1218 376 L1176 376Z" fill="#0e1c36"/>
+    <rect x="1178" y="346" width="38" height="18" rx="2" fill="#ffe8a3"/>
+    <circle class="beacon" cx="1197" cy="330" r="4.5" fill="#ff5a4d"/>
+    <!-- lamp posts -->
+    <g><circle cx="360" cy="526" r="80" fill="url(#lamp)"/><rect x="357.5" y="528" width="5" height="84" fill="#0e1c36"/><rect x="348" y="524" width="24" height="6" rx="3" fill="#ffe8a3"/></g>
+    <g><circle cx="640" cy="526" r="80" fill="url(#lamp)"/><rect x="637.5" y="528" width="5" height="84" fill="#0e1c36"/><rect x="628" y="524" width="24" height="6" rx="3" fill="#ffe8a3"/></g>
+    <!-- ground -->
+    <rect x="0" y="608" width="1440" height="152" fill="url(#tarmac)"/>
+    <rect x="110" y="612" width="1030" height="40" fill="url(#win)" mask="url(#mr)" opacity=".5"/>
+    <rect x="0" y="608" width="1440" height="6" fill="#2a3448"/>
+    <rect x="0" y="716" width="1440" height="4" fill="#ffd21f" opacity=".35"/>
+    <g id="rl" fill="#ffd21f"></g>
+    <g id="al" fill="#ffe8a3"></g>
+    <!-- taxi -->
+    <g transform="translate(700 536) scale(1.55)">
+      <ellipse cx="116" cy="82" rx="120" ry="7" fill="#000" opacity=".4"/>
+      <path d="M10 62 Q12 50 30 46 L62 44 Q80 22 112 22 L150 22 Q176 26 196 44 L218 48 Q232 52 232 64 L232 68 L10 68 Z" fill="url(#bodyg)" stroke="#b9c6d9" stroke-width=".8"/>
+      <path d="M72 44 Q86 28 112 28 L148 28 Q168 32 184 44 Z" fill="url(#glassg)"/>
+      <path d="M80 42 Q90 32 104 30 L100 42Z" fill="#fff" opacity=".35"/>
+      <rect x="113" y="28" width="3" height="16" fill="#e3eaf5"/>
+      <path d="M113 44 V66 M172 46 V66" stroke="#aebbd0" stroke-width="1" fill="none"/>
+      <rect x="98" y="50" width="11" height="2.5" rx="1.2" fill="#9fb0c8"/><rect x="156" y="50" width="11" height="2.5" rx="1.2" fill="#9fb0c8"/>
+      <rect x="10" y="60" width="222" height="5" fill="#0b4ea2"/>
+      <rect x="10" y="50" width="6" height="8" rx="2" fill="#ff4d4d"/>
+      <ellipse cx="228" cy="55" rx="5" ry="3" fill="#ffe8a3"/>
+      <polygon class="pulse" points="232,55 330,40 330,76" fill="#ffe8a3" opacity=".2"/>
+      <circle cx="58" cy="70" r="19" fill="#0b0f15"/><circle cx="58" cy="70" r="15" fill="#141922"/><circle cx="58" cy="70" r="6" fill="#8a97ad"/>
+      <circle cx="186" cy="70" r="19" fill="#0b0f15"/><circle cx="186" cy="70" r="15" fill="#141922"/><circle cx="186" cy="70" r="6" fill="#8a97ad"/>
+    </g>
+    <!-- driver, sign and bags -->
+    <g transform="translate(1085 548)">
+      <ellipse cx="14" cy="50" rx="26" ry="5" fill="#000" opacity=".4"/>
+      <rect x="4" y="30" width="7" height="22" fill="#1d2433"/><rect x="16" y="30" width="7" height="22" fill="#1d2433"/>
+      <rect x="0" y="-2" width="28" height="36" rx="9" fill="#1d3358"/>
+      <path d="M9 -2 L14 8 L19 -2Z" fill="#fff"/><path d="M13 3 L15 3 L15.5 14 L13.5 14Z" fill="#ffd21f"/>
+      <circle cx="14" cy="-12" r="9" fill="#d9a77f"/>
+      <path d="M5 -14 Q14 -26 23 -14 Q14 -19 5 -14Z" fill="#1b1f26"/>
+      <rect x="28" y="-60" width="3" height="52" fill="#c9d4e6"/>
+      <rect x="28" y="-86" width="88" height="40" rx="3" fill="#fff"/>
+      <text x="72" y="-72" text-anchor="middle" font-family="Overpass,sans-serif" font-weight="900" font-size="12" fill="#0b4ea2">WELCOME</text>
+      <text x="72" y="-57" text-anchor="middle" font-family="Public Sans,sans-serif" font-weight="600" font-size="9.5" fill="#566070">Your driver</text>
+      <rect x="22" y="2" width="9" height="6" rx="3" fill="#d9a77f"/>
+      <g transform="translate(52 22)"><rect x="0" y="0" width="26" height="30" rx="4" fill="#0b4ea2"/><rect x="8" y="-6" width="10" height="7" rx="2" fill="none" stroke="#7fb0ff" stroke-width="2"/><rect x="0" y="12" width="26" height="3" fill="#ffd21f"/></g>
+      <g transform="translate(84 28)"><rect x="0" y="0" width="22" height="24" rx="4" fill="#ffd21f"/><rect x="6" y="-5" width="10" height="6" rx="2" fill="none" stroke="#c9a200" stroke-width="2"/></g>
+    </g>
+  </svg>
+
+  <div class="topbar">
+    <a class="brand" href="#top">London Luton<br>Airport Taxis<span>Fixed prices, 24/7</span></a>
+    <nav><a href="#story">How it works</a><a href="#fleet">Vehicles</a><a href="#faq">Questions</a><a class="tel" href="tel:+442036334828">0203 633 4828</a></nav>
+  </div>
+  <div class="copy" id="top">
+    <h1>You land. Your driver is already there.</h1>
+    <p>Fixed-price Luton Airport transfers. We watch your flight, so a delay never costs you more.</p>
+    <a class="cta" href="#quote">Get your fixed fare</a>
+  </div>
+</div>
+
+<div class="pass-wrap" id="quote">
+  <form class="pass" id="bf" aria-label="Fixed fare request">
+    <div class="main">
+      <div class="tag"><span>Transfer request</span><b>Fixed fare</b></div>
+      <div class="fields">
+        <label>FROM<input id="from" value="Luton Airport" required></label>
+        <label>TO<input id="to" placeholder="Postcode or address" required></label>
+        <label>DATE<input id="dt" type="date" required></label>
+        <label>TIME<input id="tm" type="time" required></label>
+        <label>PASSENGERS<select id="px"><option>1 to 4 (taxi)</option><option>5 to 8 (8-seater)</option><option>9 to 16 (minibus)</option></select></label>
+      </div>
+      <div class="dests" id="dests">Popular:
+        <button type="button" aria-pressed="false" data-v="Heathrow Airport">Heathrow</button>
+        <button type="button" aria-pressed="false" data-v="Stansted Airport">Stansted</button>
+        <button type="button" aria-pressed="false" data-v="Gatwick Airport">Gatwick</button>
+        <button type="button" aria-pressed="false" data-v="Birmingham Airport">Birmingham</button>
+      </div>
+    </div>
+    <div class="stub">
+      <div class="code">LTN<small>Luton Airport</small></div>
+      <div><button type="submit">Request fare on WhatsApp</button><p style="margin-top:8px">Opens WhatsApp with your trip filled in. You press send.</p></div>
+    </div>
+  </form>
+</div>
+
+<div class="stats">
+  <div><b>24/7</b><span>Dispatch, every day of the year</span></div>
+  <div><b>45 min</b><span>Free waiting after you land</span></div>
+  <div><b>225</b><span>Google reviews</span></div>
+  <div><b>Fixed</b><span>Fare with barrier fee included</span></div>
+</div>
+
+<section class="story" id="story">
+  <h2 class="h2">From landing to your front door</h2>
+  <p class="intro">Three steps, and none of them involve standing in the arrivals hall wondering where your driver is.</p>
+
+  <div class="chap">
+    <div>
+      <span class="n">1</span>
+      <h3>Tell us where you are going</h3>
+      <p>Send your trip details by the form, WhatsApp or phone. You get a fixed fare, with the airport barrier fee already included.</p>
+    </div>
+    <div class="vis">
+      <div class="phone"><div class="scr">
+        <div class="hd"><i></i>Luton Airport Taxis</div>
+        <div class="bub me">Luton Airport to Stevenage, 4 people, 2 cases</div>
+        <div class="bub co">Fixed fare confirmed. Barrier fee included.</div>
+        <div class="bub co">Your driver will meet you at arrivals.</div>
+        <div class="bub me">Perfect, thank you</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="chap">
+    <div>
+      <span class="n">2</span>
+      <h3>We watch your flight</h3>
+      <p>Late landing? Nothing changes in your fare. You get 45 minutes of free waiting after landing, then 35p a minute.</p>
+    </div>
+    <div class="vis">
+      <div class="board">
+        <div class="bh"><span>ARRIVALS</span><span>EXAMPLE</span></div>
+        <div class="br"><span>Your flight</span><span>LANDED</span></div>
+        <div class="br wait"><span>Free waiting</span><span>45 MIN</span></div>
+        <div class="br"><span>Your driver</span><span>AT ARRIVALS</span></div>
+        <div class="note">An example of what we track for you.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chap">
+    <div>
+      <span class="n">3</span>
+      <h3>Your driver meets you</h3>
+      <p>A clean, air-conditioned vehicle and a driver who knows where to find you. Then straight home, no meter running.</p>
+    </div>
+    <div class="vis">
+      <svg viewBox="0 0 420 220" role="img" aria-label="Driver with a welcome sign beside a car">
+        <rect width="420" height="220" rx="14" fill="#dbe7f7"/>
+        <rect y="150" width="420" height="70" fill="#1b1f26"/>
+        <rect y="150" width="420" height="4" fill="#ffd21f" opacity=".6"/>
+        <g transform="translate(40 76) scale(1.05)">
+          <ellipse cx="116" cy="82" rx="118" ry="7" fill="#000" opacity=".3"/>
+          <path d="M10 62 Q12 50 30 46 L62 44 Q80 22 112 22 L150 22 Q176 26 196 44 L218 48 Q232 52 232 64 L232 68 L10 68 Z" fill="url(#bodyg)" stroke="#b9c6d9"/>
+          <path d="M72 44 Q86 28 112 28 L148 28 Q168 32 184 44 Z" fill="url(#glassg)"/>
+          <rect x="10" y="60" width="222" height="5" fill="#0b4ea2"/>
+          <circle cx="58" cy="70" r="15" fill="#141922"/><circle cx="58" cy="70" r="6" fill="#8a97ad"/>
+          <circle cx="186" cy="70" r="15" fill="#141922"/><circle cx="186" cy="70" r="6" fill="#8a97ad"/>
+        </g>
+        <g transform="translate(300 100)">
+          <rect x="4" y="30" width="7" height="22" fill="#1d2433"/><rect x="16" y="30" width="7" height="22" fill="#1d2433"/>
+          <rect x="0" y="-2" width="28" height="36" rx="9" fill="#1d3358"/>
+          <circle cx="14" cy="-12" r="9" fill="#d9a77f"/><path d="M5 -14 Q14 -26 23 -14 Q14 -19 5 -14Z" fill="#1b1f26"/>
+          <rect x="28" y="-48" width="3" height="42" fill="#7a8aa3"/>
+          <rect x="28" y="-70" width="74" height="34" rx="3" fill="#fff" stroke="#c4d1e4"/>
+          <text x="65" y="-57" text-anchor="middle" font-family="Overpass,sans-serif" font-weight="900" font-size="11" fill="#0b4ea2">WELCOME</text>
+          <text x="65" y="-44" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="8.5" fill="#566070">Your driver</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="calc" id="waiting">
+  <div class="wrap">
+    <div>
+      <h2 class="h2">A late flight should not cost you more</h2>
+      <p class="intro">Slide to see what waiting costs after you land. The first 45 minutes are included. This uses our real waiting policy.</p>
+    </div>
+    <div class="cbox">
+      <label for="mins">MINUTES YOU WAIT AFTER LANDING</label>
+      <input id="mins" type="range" min="0" max="120" step="5" value="30">
+      <div class="out"><b id="cost">£0.00</b><span id="minsOut">30 MIN</span></div>
+      <div class="track"><i class="f"></i><i class="p"></i></div>
+      <div class="mark"><em id="pin" style="left:25%"></em></div>
+      <div class="legend"><span>0</span><span>45 min free</span><span>120</span></div>
+      <p class="msg" id="msg"></p>
+    </div>
+  </div>
+</section>
+
+<section class="fleet" id="fleet">
+  <h2 class="h2">The right vehicle for your group</h2>
+  <p class="intro">Tell us how many are travelling and how much luggage you have, and we match the vehicle.</p>
+  <div class="road">
+    <div class="veh">
+      <svg viewBox="0 0 240 90" aria-hidden="true"><path d="M10 62 Q12 50 30 46 L62 44 Q80 22 112 22 L150 22 Q176 26 196 44 L218 48 Q232 52 232 64 L232 68 L10 68 Z" fill="url(#bodyg)"/><path d="M72 44 Q86 28 112 28 L148 28 Q168 32 184 44 Z" fill="url(#glassg)"/><rect x="113" y="28" width="3" height="16" fill="#e3eaf5"/><rect x="10" y="60" width="222" height="5" fill="#ffd21f"/><ellipse cx="228" cy="55" rx="5" ry="3" fill="#ffe8a3"/><rect x="10" y="50" width="6" height="8" rx="2" fill="#ff4d4d"/><circle cx="58" cy="70" r="15" fill="#06090e"/><circle cx="58" cy="70" r="6" fill="#8a97ad"/><circle cx="186" cy="70" r="15" fill="#06090e"/><circle cx="186" cy="70" r="6" fill="#8a97ad"/></svg>
+      <h3>Taxi</h3><p>1 to 4 passengers</p>
+    </div>
+    <div class="veh">
+      <svg viewBox="0 0 244 90" aria-hidden="true"><path d="M8 66 Q8 50 24 44 L50 40 Q66 14 100 14 L178 14 Q204 18 214 44 L228 50 Q236 56 236 66 L236 70 L8 70 Z" fill="url(#bodyg)"/><path d="M62 40 Q74 20 100 20 L116 20 L116 40Z M122 20 L176 20 Q192 22 202 40 L122 40Z" fill="url(#glassg)"/><rect x="8" y="62" width="228" height="5" fill="#ffd21f"/><ellipse cx="232" cy="58" rx="5" ry="3" fill="#ffe8a3"/><rect x="8" y="52" width="6" height="8" rx="2" fill="#ff4d4d"/><circle cx="58" cy="72" r="15" fill="#06090e"/><circle cx="58" cy="72" r="6" fill="#8a97ad"/><circle cx="188" cy="72" r="15" fill="#06090e"/><circle cx="188" cy="72" r="6" fill="#8a97ad"/></svg>
+      <h3>8-seater</h3><p>5 to 8 passengers</p>
+    </div>
+    <div class="veh">
+      <svg viewBox="0 0 270 90" aria-hidden="true"><path d="M6 70 L6 26 Q6 12 20 12 L224 12 Q240 12 248 30 L262 50 Q266 56 266 64 L266 72 L6 72Z" fill="url(#bodyg)"/><g fill="url(#glassg)"><rect x="18" y="22" width="30" height="22" rx="3"/><rect x="56" y="22" width="30" height="22" rx="3"/><rect x="94" y="22" width="30" height="22" rx="3"/><rect x="132" y="22" width="30" height="22" rx="3"/><rect x="170" y="22" width="30" height="22" rx="3"/><path d="M208 22 L228 22 Q236 24 242 38 L242 44 L208 44Z"/></g><rect x="6" y="62" width="260" height="5" fill="#ffd21f"/><ellipse cx="262" cy="58" rx="5" ry="3" fill="#ffe8a3"/><rect x="6" y="50" width="6" height="8" rx="2" fill="#ff4d4d"/><circle cx="62" cy="74" r="15" fill="#06090e"/><circle cx="62" cy="74" r="6" fill="#8a97ad"/><circle cx="214" cy="74" r="15" fill="#06090e"/><circle cx="214" cy="74" r="6" fill="#8a97ad"/></svg>
+      <h3>Minibus</h3><p>Up to 16 passengers</p>
+    </div>
+  </div>
+  <p class="fnote">Crew transport and business accounts are available for regular bookings.</p>
+</section>
+
+<section class="routes" id="routes">
+  <h2 class="h2">Airport runs and long distance</h2>
+  <p class="intro">Same fixed-fare promise whether you are going across town or across the country.</p>
+  <figure class="rmap">
+    <svg viewBox="0 0 800 440" role="img" aria-label="Luton at the centre with routes to Heathrow, Gatwick, Stansted, Southend, Birmingham, East Midlands and Manchester">
+      <g fill="none" stroke="#9cc2f4" stroke-width="2" stroke-dasharray="3 7" stroke-linecap="round" class="flow">
+        <path d="M400 230 Q320 270 230 292"/><path d="M400 230 Q380 320 372 372"/><path d="M400 230 Q480 190 560 150"/><path d="M400 230 Q560 250 690 262"/>
+        <path d="M400 230 Q340 150 270 78"/><path d="M400 230 Q420 130 468 56"/><path d="M400 230 Q250 160 120 70"/>
+      </g>
+      <g font-family="Overpass,sans-serif" font-weight="800" font-size="19" fill="#fff">
+        <circle cx="230" cy="292" r="8" fill="#ffd21f"/><text x="170" y="324">Heathrow</text>
+        <circle cx="372" cy="372" r="8" fill="#ffd21f"/><text x="388" y="388">Gatwick</text>
+        <circle cx="560" cy="150" r="8" fill="#ffd21f"/><text x="576" y="148">Stansted</text>
+        <circle cx="690" cy="262" r="8" fill="#ffd21f"/><text x="640" y="296">Southend</text>
+        <circle cx="270" cy="78" r="8" fill="#ffd21f"/><text x="282" y="76">Birmingham</text>
+        <circle cx="468" cy="56" r="8" fill="#ffd21f"/><text x="484" y="54">East Midlands</text>
+        <circle cx="120" cy="70" r="8" fill="#ffd21f"/><text x="84" y="48">Manchester</text>
+      </g>
+      <circle cx="400" cy="230" r="30" fill="#ffd21f"/><circle cx="400" cy="230" r="42" fill="none" stroke="#ffd21f" stroke-width="2" opacity=".5"/>
+      <text x="400" y="237" text-anchor="middle" font-family="Overpass,sans-serif" font-weight="900" font-size="20" fill="#1b1f26">LTN</text>
+    </svg>
+    <figcaption>Schematic only, not to scale. More destinations on request.</figcaption>
+  </figure>
+</section>
+
+<section class="faq" id="faq">
+  <h2 class="h2">Questions before you book</h2>
+  <div class="list">
+    <details><summary>What if my flight is delayed?</summary><p>We monitor your flight, so your pick-up follows your landing time. A delay does not change your fixed fare.</p></details>
+    <details><summary>Is the airport barrier fee included?</summary><p>Yes. Your fixed fare includes the airport barrier fee.</p></details>
+    <details><summary>How long will my driver wait?</summary><p>45 minutes after landing are included. After that, waiting is 35p a minute.</p></details>
+    <details><summary>Where will my driver meet me?</summary><p>Your booking confirmation tells you exactly where to meet, and you can message dispatch on WhatsApp at any time.</p></details>
+    <details><summary>How do I pay?</summary><p>Visa, Mastercard, PayPal, or by card online through Stripe.</p></details>
+    <details><summary>Can you take large groups?</summary><p>Yes. 8-seaters and minibuses carry up to 16 passengers with their luggage.</p></details>
+  </div>
+</section>
+
+<section>
+  <div class="proof">
+    <div class="big">225</div>
+    <div>
+      <p><b>Google reviews</b> from passengers who mention punctual drivers, easy booking and friendly service.</p>
+      <div class="tags"><span>Punctual drivers</span><span>Easy booking</span><span>Friendly service</span></div>
+      <p class="pay">Pay by Visa, Mastercard, PayPal or card online through Stripe.</p>
+    </div>
+  </div>
+</section>
+
+<section class="call" id="contact">
+  <h2 class="h2">Talk to dispatch, any hour</h2>
+  <a class="num" href="tel:+442036334828">0203 633 4828</a>
+  <div class="btns"><a href="https://wa.me/442036334828">Message on WhatsApp</a><a href="#quote">Get a fixed fare</a></div>
+  <address>960 Capability Green, Luton LU1 3PE</address>
+</section>
+<footer>&copy; 2026 London Luton Airport Taxis. Concept design by Codence.</footer>
+
+<button id="cb" aria-label="Open chat">Chat</button>
+<div id="cw" role="dialog" aria-label="Booking assistant"><div class="ch">Booking assistant<small>Demo of an AI booking chat</small></div><div id="cm" aria-live="polite"></div><form id="cf"><input id="ci" placeholder="Type your answer" autocomplete="off" aria-label="Your message"><button>Send</button></form></div>
+
+<script>
+// on phones, frame the scene around the taxi and driver, and move the plane clear of the headline
+if(window.matchMedia('(max-width:700px)').matches){document.querySelector('svg.scene').setAttribute('viewBox','620 0 600 760');document.getElementById('pl').setAttribute('transform','translate(930 505) rotate(5) scale(.72)');}
+// runway edge lights and approach lights
+(function(){const ns='http://www.w3.org/2000/svg';
+  const rl=document.getElementById('rl'),al=document.getElementById('al');
+  for(let x=20;x<1440;x+=48){const c=document.createElementNS(ns,'circle');c.setAttribute('cx',x);c.setAttribute('cy',730);c.setAttribute('r',3);rl.appendChild(c);}
+  for(let i=0;i<12;i++){const t=i/11;const c=document.createElementNS(ns,'circle');c.setAttribute('cx',40+t*320);c.setAttribute('cy',700-t*70);c.setAttribute('r',4-t*2.4);c.setAttribute('opacity',(1-t*.5).toFixed(2));al.appendChild(c);}})();
+// sticky bar after the hero
+const hero=document.getElementById('heroEl'),st=document.getElementById('sticky');
+if('IntersectionObserver' in window){new IntersectionObserver(e=>{st.classList.toggle('show',!e[0].isIntersecting);},{threshold:0}).observe(hero);}
+// popular destinations fill the form
+const dests=document.getElementById('dests'),to=document.getElementById('to');
+dests.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  dests.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));to.value=b.dataset.v;});
+// opens WhatsApp with the trip prefilled; the person presses send
+document.getElementById('bf').addEventListener('submit',e=>{e.preventDefault();
+  const v=id=>document.getElementById(id).value;
+  const t='Hello, I would like a fixed fare.%0APick-up: '+encodeURIComponent(v('from'))+'%0ADrop-off: '+encodeURIComponent(v('to'))+'%0ADate: '+v('dt')+' '+v('tm')+'%0APassengers: '+encodeURIComponent(v('px'));
+  window.open('https://wa.me/442036334828?text='+t,'_blank','noopener');});
+// waiting calculator: 45 minutes free, then 35p a minute (their published policy)
+const r=document.getElementById('mins');
+function calc(){const m=+r.value,extra=Math.max(0,m-45),c=(extra*0.35).toFixed(2);
+  document.getElementById('cost').textContent='£'+c;
+  document.getElementById('minsOut').textContent=m+' MIN';
+  document.getElementById('pin').style.left=(m/120*100)+'%';
+  document.getElementById('msg').innerHTML=m<=45?'<b>Free.</b> Your 45 minutes of waiting are included, and your fixed fare does not change.':'<b>'+extra+' minutes</b> past the free 45, at 35p a minute. Your fixed fare itself does not change.';}
+r.addEventListener('input',calc);calc();
+// scripted chat demo
+const S=["Where would you like to be dropped off?","What date and time is the pick-up?","How many passengers, and how many bags?","Is there a flight number we should track?"];
+const O="Hello! I can quote your Luton Airport transfer. Where are you travelling from?";
+const C="Thanks. In the live version I send this to dispatch and reply with your fixed fare and confirmation.";
+let i=-1,started=false;const cm=document.getElementById('cm'),cw=document.getElementById('cw');
+function add(t,c){const d=document.createElement('div');d.className='m '+c;d.textContent=t;cm.appendChild(d);cm.scrollTop=cm.scrollHeight}
+document.getElementById('cb').onclick=()=>{cw.classList.toggle('open');if(cw.classList.contains('open')&&!started){started=true;setTimeout(()=>add(O,'b'),250)}};
+document.getElementById('cf').onsubmit=e=>{e.preventDefault();const inp=document.getElementById('ci'),v=inp.value.trim();if(!v)return;add(v,'u');inp.value='';i++;
+  setTimeout(()=>add(i<S.length?S[i]:(i===S.length?C:'This is a demo, so there is nothing more to send. The live assistant keeps going.'),'b'),550)};
+</script>
+</body>
+</html>
